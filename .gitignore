@@ -1,0 +1,6 @@
+data
+apigateway/bin
+apigateway/tmp
+
+payments/bin
+payments/tmp

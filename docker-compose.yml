@@ -1,0 +1,45 @@
+version: '3'
+services:
+  apigateway:
+    build:
+      context: ./apigateway
+      dockerfile: Dockerfile
+    container_name: apigateway
+    ports:
+      - "3000:3000"
+    volumes:
+      - $GOPATH/src/paymentapi/apigateway:/apigateway
+    networks:
+      - payment_api
+    working_dir: /apigateway
+    command: air
+
+  payments:
+    build:
+      context: ./payments
+      dockerfile: Dockerfile
+    container_name: payments
+    ports:
+      - "3001:3001"
+    volumes:
+      - $GOPATH/src/paymentapi/payments:/payments
+    networks:
+      - payment_api
+    working_dir: /payments
+    command: air
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - payment_api
+
+volumes:
+  mongodb_data:
+
+networks:
+  payment_api:

@@ -1,0 +1,5 @@
+{
+    "DB_DRIVER": "mongodb",
+    "DB_HOST": "mongodb",
+    "DB_PORT": "27017"
+}
