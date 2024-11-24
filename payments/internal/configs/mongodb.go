@@ -27,7 +27,6 @@ func uri() string {
 func ConnectDB() (*MongoDB, error) {
 
 	mongodbUri := uri()
-	fmt.Println(mongodbUri)
 
 	clientOptions := options.Client().ApplyURI(mongodbUri)
 	clientOptions.SetConnectTimeout(10 * time.Second)

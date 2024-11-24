@@ -2,8 +2,11 @@ package usecases
 
 import (
 	"context"
+	"encoding/json"
 	domain "payments/internal/domain"
 	dto "payments/internal/dto"
+	service "payments/internal/services"
+
 	"time"
 )
 
@@ -55,5 +58,33 @@ func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	var gateway service.GatewayPaymentInterface
+	gateway = &service.Wiremock{
+		Amount: order.Total,
+		Method: input.Payment.Method,
+	}
+
+	PaymentService := service.NewGatewayPaymentService(gateway)
+	_, err = PaymentService.Pay()
+	if err != nil {
+		return "", err
+	}
+
+	paymentNotification := &domain.PaymentNotification{
+		OrderID:       order.OrderID,
+		PaymentStatus: "success",
+	}
+
+	notification, err := json.Marshal(paymentNotification)
+	if err != nil {
+		return "", err
+	}
+
+	_, err = service.SendMessage(string(notification))
+	if err != nil {
+		return "", err
+	}
+
 	return id, nil
 }
