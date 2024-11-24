@@ -1,5 +1,10 @@
 {
     "DB_DRIVER": "mongodb",
     "DB_HOST": "mongodb",
-    "DB_PORT": "27017"
+    "DB_PORT": "27017",
+    "AMQP" : {
+        "URL": "amqp://guest:guest@rabbitmq:5672/",
+        "QUEUE": "payment.success",
+        "EXCHANGE": "notification.topic"
+    }
 }

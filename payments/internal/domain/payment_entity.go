@@ -20,7 +20,7 @@ type Order struct {
 	OrderDate       time.Time       `bson:"order_date"`
 	Status          string          `bson:"status"`
 	Products        []Product       `bson:"products"`
-	total           float64         `bson:"total"`
+	Total           float64         `bson:"total"`
 }
 
 type Product struct {
@@ -29,6 +29,11 @@ type Product struct {
 	Description string  `bson:"description"`
 	Price       float64 `bson:"price"`
 	Quantity    int     `bson:"quantity"`
+}
+
+type PaymentNotification struct {
+	OrderID       string `bson:"order_id"`
+	PaymentStatus string `bson:"status"`
 }
 
 func NewOrder(orderID, customerName string, address ShippingAddress) (*Order, error) {
@@ -46,7 +51,7 @@ func NewOrder(orderID, customerName string, address ShippingAddress) (*Order, er
 		OrderDate:       time.Now(),
 		Status:          "pending",
 		Products:        []Product{},
-		total:           0.0,
+		Total:           0.0,
 	}, nil
 }
 
@@ -56,7 +61,7 @@ func (o *Order) AddProduct(product Product) {
 
 func (o *Order) CalculateTotal() {
 	for _, product := range o.Products {
-		o.total += product.Price * float64(product.Quantity)
+		o.Total += product.Price * float64(product.Quantity)
 	}
 }
 

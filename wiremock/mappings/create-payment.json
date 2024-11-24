@@ -1,0 +1,22 @@
+{
+    "request": {
+      "method": "POST",
+      "url": "/api/payments",
+      "bodyPatterns": [
+        {
+          "matchesJsonPath": "$.amount"
+        },
+        {
+          "matchesJsonPath": "$.payment_method"
+        }
+      ]
+    },
+    "response": {
+      "status": 201,
+      "bodyFileName": "create-payment-response.json",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+  

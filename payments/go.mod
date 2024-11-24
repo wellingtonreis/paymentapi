@@ -5,7 +5,7 @@ go 1.22.1
 require (
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/gofiber/fiber/v2 v2.52.5
-	github.com/gofiber/storage/mongodb/v2 v2.0.1
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/spf13/viper v1.19.0
 	go.mongodb.org/mongo-driver v1.17.1
 )

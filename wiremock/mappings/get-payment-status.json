@@ -1,0 +1,14 @@
+{
+    "request": {
+      "method": "GET",
+      "urlPattern": "/api/payments/[a-zA-Z0-9-]+"
+    },
+    "response": {
+      "status": 200,
+      "bodyFileName": "get-payment-status-response.json",
+      "headers": {
+        "Content-Type": "application/json"
+      }
+    }
+  }
+  

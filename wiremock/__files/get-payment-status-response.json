@@ -1,0 +1,9 @@
+{
+    "id": "1",
+    "status": "approved",
+    "amount": 1000,
+    "currency": "USD",
+    "payment_method": "credit_card",
+    "approved_at": "2024-11-23T10:05:00Z"
+  }
+  
