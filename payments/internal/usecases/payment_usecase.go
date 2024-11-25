@@ -73,6 +73,7 @@ func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 
 	paymentNotification := &domain.PaymentNotification{
 		OrderID:       order.OrderID,
+		Amount:        order.Total,
 		PaymentStatus: "success",
 	}
 

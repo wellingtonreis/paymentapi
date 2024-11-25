@@ -32,8 +32,9 @@ type Product struct {
 }
 
 type PaymentNotification struct {
-	OrderID       string `bson:"order_id"`
-	PaymentStatus string `bson:"status"`
+	OrderID       string  `json:"order_id"`
+	Amount        float64 `json:"amount"`
+	PaymentStatus string  `json:"status"`
 }
 
 func NewOrder(orderID, customerName string, address ShippingAddress) (*Order, error) {

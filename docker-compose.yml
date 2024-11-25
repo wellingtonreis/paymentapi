@@ -28,6 +28,20 @@ services:
     working_dir: /payments
     command: air
 
+  cashback:
+    build:
+      context: ./cashback
+      dockerfile: Dockerfile
+    container_name: cashback
+    ports:
+      - "3002:3002"
+    volumes:
+      - $GOPATH/src/paymentapi/cashback:/cashback
+    networks:
+      - payment_api
+    working_dir: /cashback
+    command: air
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
