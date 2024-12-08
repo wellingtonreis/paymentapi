@@ -21,6 +21,7 @@ type CardDetails struct {
 }
 
 type Order struct {
+	UserID          string          `json:"user_id" validate:"required"`
 	OrderID         string          `json:"order_id" validate:"required"`
 	CustomerName    string          `json:"customer_name" validate:"required"`
 	ShippingAddress ShippingAddress `json:"shipping_address" validate:"required"`

@@ -9,6 +9,12 @@ type Cashback struct {
 	DiscountPercent float64 `bson:"discount_percent"`
 }
 
+type Wallet struct {
+	UserID   string  `json:"user_id"`
+	OrderID  string  `json:"order_id"`
+	Cashback float64 `json:"amount"`
+}
+
 func NewCashback(amount, discountPercent float64) (*Cashback, error) {
 	if amount < 0 {
 		return nil, errors.New("amount must be greater than or equal to zero")

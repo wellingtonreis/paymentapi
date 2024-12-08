@@ -11,6 +11,6 @@ COPY . .
 
 RUN go mod tidy
 
-EXPOSE 3000
+EXPOSE 3001
 
 CMD ["air"]

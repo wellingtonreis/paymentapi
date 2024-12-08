@@ -1,47 +1,5 @@
 version: '3'
 services:
-  apigateway:
-    build:
-      context: ./apigateway
-      dockerfile: Dockerfile
-    container_name: apigateway
-    ports:
-      - "3000:3000"
-    volumes:
-      - $GOPATH/src/paymentapi/apigateway:/apigateway
-    networks:
-      - payment_api
-    working_dir: /apigateway
-    command: air
-
-  payments:
-    build:
-      context: ./payments
-      dockerfile: Dockerfile
-    container_name: payments
-    ports:
-      - "3001:3001"
-    volumes:
-      - $GOPATH/src/paymentapi/payments:/payments
-    networks:
-      - payment_api
-    working_dir: /payments
-    command: air
-
-  cashback:
-    build:
-      context: ./cashback
-      dockerfile: Dockerfile
-    container_name: cashback
-    ports:
-      - "3002:3002"
-    volumes:
-      - $GOPATH/src/paymentapi/cashback:/cashback
-    networks:
-      - payment_api
-    working_dir: /cashback
-    command: air
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
@@ -49,19 +7,6 @@ services:
       - "27017:27017"
     volumes:
       - ./data/mongodb:/data/db
-    networks:
-      - payment_api
-
-  wiremock:
-    image: wiremock/wiremock:3.9.2
-    container_name: wiremock
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./wiremock/mappings:/home/wiremock/mappings
-      - ./wiremock/__files:/home/wiremock/__files  
-    environment:
-      - JAVA_OPTS=-Xmx1024m
     networks:
       - payment_api
 
@@ -78,7 +23,88 @@ services:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - ./data/rabbitmq_data:/var/lib/rabbitmq
+
+  apigateway:
+    build:
+      context: ./apigateway
+      dockerfile: Dockerfile
+    container_name: apigateway
+    ports:
+      - "3000:3000"
+    volumes:
+      - $GOPATH/src/paymentapi/apigateway:/apigateway
+    networks:
+      - payment_api
+    depends_on:
+      - mongodb
+      - rabbitmq
+    working_dir: /apigateway
+    command: air
+
+  payments:
+    build:
+      context: ./payments
+      dockerfile: Dockerfile
+    container_name: payments
+    ports:
+      - "3001:3001"
+    volumes:
+      - $GOPATH/src/paymentapi/payments:/payments
+    networks:
+      - payment_api
+    depends_on:
+      - mongodb
+      - rabbitmq
+    working_dir: /payments
+    command: air
+
+  cashback:
+    build:
+      context: ./cashback
+      dockerfile: Dockerfile
+    container_name: cashback
+    ports:
+      - "3002:3002"
+    volumes:
+      - $GOPATH/src/paymentapi/cashback:/cashback
+    networks:
+      - payment_api
+    depends_on:
+      - mongodb
+      - rabbitmq
+    working_dir: /cashback
+    command: air
+
+  wallet:
+    build:
+      context: ./wallet
+      dockerfile: Dockerfile
+    container_name: wallet
+    ports:
+      - "3003:3003"
+    volumes:
+      - $GOPATH/src/paymentapi/wallet:/wallet
+    networks:
+      - payment_api
+    depends_on:
+      - mongodb
+      - rabbitmq
+    working_dir: /wallet
+    command: air
+
+  wiremock:
+    image: wiremock/wiremock:3.9.2
+    container_name: wiremock
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./wiremock/mappings:/home/wiremock/mappings
+      - ./wiremock/__files:/home/wiremock/__files  
+    environment:
+      - JAVA_OPTS=-Xmx1024m
+    networks:
+      - payment_api
 
 volumes:
   mongodb_data:

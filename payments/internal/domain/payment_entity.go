@@ -14,13 +14,19 @@ type ShippingAddress struct {
 }
 
 type Order struct {
+	UserID          string          `bson:"user_id"`
 	OrderID         string          `bson:"order_id"`
 	CustomerName    string          `bson:"customer_name"`
 	ShippingAddress ShippingAddress `bson:"shipping_address"`
 	OrderDate       time.Time       `bson:"order_date"`
 	Status          string          `bson:"status"`
 	Products        []Product       `bson:"products"`
+	Wallet          []Wallet        `bson:"wallet"`
 	Total           float64         `bson:"total"`
+}
+
+type Wallet struct {
+	Balance float64 `bson:"balance"`
 }
 
 type Product struct {
@@ -32,12 +38,13 @@ type Product struct {
 }
 
 type PaymentNotification struct {
+	UserID        string  `json:"user_id"`
 	OrderID       string  `json:"order_id"`
 	Amount        float64 `json:"amount"`
 	PaymentStatus string  `json:"status"`
 }
 
-func NewOrder(orderID, customerName string, address ShippingAddress) (*Order, error) {
+func NewOrder(userID string, orderID string, customerName string, address ShippingAddress) (*Order, error) {
 	if orderID == "" {
 		return nil, errors.New("orderID is required")
 	}
@@ -46,12 +53,14 @@ func NewOrder(orderID, customerName string, address ShippingAddress) (*Order, er
 	}
 
 	return &Order{
+		UserID:          userID,
 		OrderID:         orderID,
 		CustomerName:    customerName,
 		ShippingAddress: address,
 		OrderDate:       time.Now(),
 		Status:          "pending",
 		Products:        []Product{},
+		Wallet:          []Wallet{},
 		Total:           0.0,
 	}, nil
 }

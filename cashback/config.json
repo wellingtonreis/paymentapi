@@ -4,7 +4,10 @@
     "DB_PORT": "27017",
     "AMQP" : {
         "URL": "amqp://guest:guest@rabbitmq:5672/",
-        "QUEUE": "payment.success",
+        "QUEUE": {
+            "Q1": "payment.success",
+            "Q2": "payment.cashback"
+        },
         "EXCHANGE": "notification.topic"
     }
 }

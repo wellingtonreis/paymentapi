@@ -12,6 +12,7 @@ import (
 
 type PaymentRepositoryInterface interface {
 	Save(ctx context.Context, payment *domain.Order) (string, error)
+	Update(ctx context.Context, payment *domain.Order) error
 }
 
 type PaymentUseCase struct {
@@ -25,6 +26,7 @@ func NewPaymentUseCase(repository PaymentRepositoryInterface) PaymentUseCase {
 func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 
 	order, err := domain.NewOrder(
+		input.Order.UserID,
 		input.Order.OrderID,
 		input.Order.CustomerName,
 		domain.ShippingAddress{
@@ -50,6 +52,7 @@ func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 	}
 
 	order.CalculateTotal()
+	order.UpdateStatus("pending")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -71,10 +74,12 @@ func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 		return "", err
 	}
 
+	order.UpdateStatus("shipped")
 	paymentNotification := &domain.PaymentNotification{
+		UserID:        order.UserID,
 		OrderID:       order.OrderID,
 		Amount:        order.Total,
-		PaymentStatus: "success",
+		PaymentStatus: order.Status,
 	}
 
 	notification, err := json.Marshal(paymentNotification)
@@ -83,6 +88,11 @@ func (u *PaymentUseCase) CreatePayment(input *dto.PaymentDTO) (string, error) {
 	}
 
 	_, err = service.SendMessage(string(notification))
+	if err != nil {
+		return "", err
+	}
+
+	err = u.repository.Update(ctx, order)
 	if err != nil {
 		return "", err
 	}
